@@ -13,10 +13,10 @@ int main(void)
 	char desconto, compra, novaCompra;
 	char cpeca[3], csem[3];
 	char *semana, *nomePeca;
-	char caminho[30];
+	char caminho[30] = "";
 	char arquivo[25] = "BancoDados.txt";
 	char pArq[40][10];
-	char poltEsc[2];
+	char poltEsc[10];
 	FILE *arquivoDados;
 	
 	
@@ -84,7 +84,7 @@ int main(void)
 	sprintf(cpeca, "%d", peca);
 	sprintf(csem, "%d", sem);
 	
-	strcat(caminho, cpeca);
+	strcpy(caminho, cpeca);
 	strcat(caminho, csem);
 	strcat(caminho, arquivo);
 	
@@ -101,7 +101,8 @@ int main(void)
 	}
 	fscanf(arquivoDados, "%d", &valor);
 	fscanf(arquivoDados, "%d", &numIng);
-	
+	fclose(arquivoDados);
+
 	//Verificar se ainda tem ingressos disponíveis para essa data
 	if(numIng>=40)
 	{
@@ -116,11 +117,7 @@ int main(void)
 	printf("|~~~~~~~~~~~~~~~~~~~~~|\n");
 	printf("|Escolha a poltrona:  |\n");
 	printf("|_____________________|\n\n");
-	for(j=0; j<40; j++)
-	{
-		fprintf(arquivoDados, "%s ", pArq[j]);
-	}
-	
+
 	printf("---------Palco---------\n");
 	for(j=0; j<40; j++)
 	{
@@ -128,7 +125,7 @@ int main(void)
 		if((j+1)%8==0) printf("\n");
 	}
 	printf("\n");
-	scanf("%s", &poltEsc);
+	scanf("%9s", poltEsc);
 	
 	//Verificar se a poltrona está disponível
 	for(j=0; j<40; j++)
@@ -206,8 +203,7 @@ int main(void)
 			valorIngresso = 100;
 		}
 	}
-	fclose(arquivoDados);
-	
+
 	valor:
 	printf("|~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|\n");
 	printf("| O valor do ingresso é: R$ %d,00\n", valorIngresso);
@@ -220,6 +216,11 @@ int main(void)
 	{
 		//Atualizar banco de dados com os dados da compra
 		arquivoDados = fopen(caminho, "w");
+		if(arquivoDados == NULL)
+		{
+			printf("Não foi possível gravar o arquivo!\n");
+			exit(1);
+		}
 		for(j=0; j<40; j++)
 		{
 			fprintf(arquivoDados, "%s ", pArq[j]);
